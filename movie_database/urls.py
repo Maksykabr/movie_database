@@ -1,9 +1,14 @@
-# urls.py
-from django.urls import path
-from .views import DirectorList, ActorList, MovieList
+from django.urls import path, include
+from . import views
+from rest_framework import routers
+
+
+router = routers.SimpleRouter()
+router.register(r'directors', views.DirectorViewsSet)
+router.register(r'actors', views.ActorViewsSet)
+router.register(r'movie', views.MovieViewsSet)
+router.register(r'movies', views.MoviesViewsSet)
 
 urlpatterns = [
-    path('directors/', DirectorList.as_view(), name='director-list'),
-    path('actors/', ActorList.as_view(), name='actor-list'),
-    path('movies/', MovieList.as_view(), name='movie-list'),
+    path('api/v1/', include(router.urls)),
 ]
