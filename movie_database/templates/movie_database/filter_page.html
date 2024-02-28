@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Filter</title>
+</head>
+<body>
+
+<h1>Movie Filter</h1>
+
+<form method="get" action="{% url 'movie-filter-view' %}">
+    <label for="name">Name:</label>
+    <input type="text" name="name" value="{{ request.GET.name }}">
+
+    <label for="release_year">Release Year:</label>
+    <input type="text" name="release_year" value="{{ request.GET.release_year }}">
+
+    <label for="director__name">Director Name:</label>
+    <input type="text" name="director__name" value="{{ request.GET.director__name }}">
+
+    <label for="actors__name">Actor Name:</label>
+    <input type="text" name="actors__name" value="{{ request.GET.actors__name }}">
+
+    <button type="submit">Filter</button>
+</form>
+
+{% if movies %}
+    <ul>
+        {% for movie in movies %}
+            <li>{{ movie.title }}</li>
+            <li>{{ movie.release_year }}</li>
+            <li>{{ movie.director.name }}</li>
+            <li>Actors:
+                <ul>
+                    {% for actor in movie.actors %}
+                        <li>{{ actor.name }}</li>
+                    {% endfor %}
+                </ul>
+            </li>
+
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No movies found.</p>
+{% endif %}
+
+</body>
+</html>

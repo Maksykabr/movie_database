@@ -1,12 +1,11 @@
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.utils.decorators import method_decorator
-from rest_framework.decorators import action
-from .management.commands.import_movies import Command as ImportMoviesCommand
+from django.shortcuts import render
+from django.views import View
+
+from .filters import MovieFilter
+from .paginations import MyPagination
 
 from rest_framework import mixins, viewsets
 
-from rest_framework import generics
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.viewsets import GenericViewSet
 
@@ -22,6 +21,7 @@ class DirectorViewsSet(mixins.CreateModelMixin,
                        GenericViewSet):
     queryset = Director.objects.all()
     serializer_class = DirectorSerializer
+    pagination_class = MyPagination
 
 
 class ActorViewsSet(mixins.CreateModelMixin,
@@ -32,6 +32,7 @@ class ActorViewsSet(mixins.CreateModelMixin,
                     GenericViewSet):
     queryset = Actor.objects.all()
     serializer_class = ActorSerializer
+    pagination_class = MyPagination
 
 
 class MovieViewsSet(mixins.CreateModelMixin,
@@ -42,24 +43,24 @@ class MovieViewsSet(mixins.CreateModelMixin,
                     GenericViewSet):
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
+    pagination_class = MyPagination
 
 
-class MoviesViewsSet(mixins.CreateModelMixin,
-                     mixins.RetrieveModelMixin,
-                     mixins.DestroyModelMixin,
-                     mixins.UpdateModelMixin,
-                     mixins.ListModelMixin,
-                     GenericViewSet):
+class MovieFilterViewsSet(mixins.ListModelMixin, GenericViewSet):
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['release_year', 'director__name', 'actors__name']
+    filterset_class = MovieFilter
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset, many=True)
+        context = {'movies': serializer.data}
+        return render(request, 'movie_database/filter_page.html', context)
 
 
-@method_decorator(csrf_exempt, name='dispatch')
-class ImportMoviesViewSet(GenericViewSet):
-    @action(detail=False, methods=['post'])
-    def import_movies(self, request):
-        command = ImportMoviesCommand()
-        command.handle()
-        return JsonResponse({'status': 'success', 'message': 'Movies imported successfully'})
+class PreviewView(View):
+    template_name = 'movie_database/preview.html'
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name)
