@@ -6,8 +6,11 @@ def get_data():
     page = 1
     imdb_ids = []
     movies = []
+    i = 1
     while True:
-        api_key = '77e34546'
+        i += 1
+        print(i)
+        api_key = 'aab69305'
         objectsListUrl = f'http://www.omdbapi.com/?apikey={api_key}&plot=full&s=movie&type=movie&r=json&page={page}&v=1'
         first_response = requests.get(objectsListUrl)
 
@@ -28,7 +31,6 @@ def get_data():
                             print(f"No data found for IMDb ID: {movie_id}")
                         else:
                             movies.append(movie_data)
-                            print('movie data is ready')
                     else:
                         print(f"Failed to retrieve data. Status code: {second_response.status_code}")
                         print("Error message:", second_response.text)
@@ -42,9 +44,6 @@ def get_data():
             print("Error message:", first_response.text)
             break
     return movies
-
-
-movies_list = get_data()
 
 
 def prepared_data(movies_list):
@@ -63,4 +62,3 @@ def prepared_data(movies_list):
     return prepared_movies
 
 
-prepared_movies_data = prepared_data(movies_list)

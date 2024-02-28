@@ -1,3 +1,9 @@
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+from rest_framework.decorators import action
+from .management.commands.import_movies import Command as ImportMoviesCommand
+
 from rest_framework import mixins, viewsets
 
 from rest_framework import generics
@@ -48,3 +54,12 @@ class MoviesViewsSet(mixins.CreateModelMixin,
     serializer_class = MovieSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['release_year', 'director__name', 'actors__name']
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class ImportMoviesViewSet(GenericViewSet):
+    @action(detail=False, methods=['post'])
+    def import_movies(self, request):
+        command = ImportMoviesCommand()
+        command.handle()
+        return JsonResponse({'status': 'success', 'message': 'Movies imported successfully'})
