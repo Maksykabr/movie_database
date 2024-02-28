@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Database</title>
+</head>
+<body>
+
+<h1>Movie Database</h1>
+
+<!-- Director Views Set -->
+<h2>Director Views Set</h2>
+<p>
+    This set of views allows you to perform CRUD operations on directors.
+    <br>
+    <a href="{% url 'directors-list' %}">Directors</a>
+</p>
+
+<!-- Actor Views Set -->
+<h2>Actor Views Set</h2>
+<p>
+    This set of views allows you to perform CRUD operations on actors.
+    <br>
+    <a href="{% url 'actors-list' %}">Actors</a>
+</p>
+
+<!-- Movie Views Set -->
+<h2>Movie Views Set</h2>
+<p>
+    This set of views allows you to perform CRUD operations on movies.
+    <br>
+    <a href="{% url 'movies-list' %}">Movies</a>
+</p>
+
+<!-- Movie Filter Views Set -->
+<h2>Movie Filter Views Set</h2>
+<p>
+    This set of views allows you to filter movies based on specific criteria.
+    <br>
+    <a href="{% url 'movies_filter-list' %}">Movie Filter</a>
+</p>
+<h2> If you want to do put, path, delete</h2>
+<p>Add to any link pk and it will redirect you to a page with all these functions</p>
+<p>Example: /api/v1/directors/{pk}/</p>
+</body>
+</html>
